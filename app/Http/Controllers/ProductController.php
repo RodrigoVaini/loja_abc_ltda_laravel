@@ -12,7 +12,7 @@ class ProductController extends Controller {
         $products = Product::all();
         $products = Product::orderBy('id', 'asc')->get();
 
-        return response()->json(products);
+        return response()->json($products);
 
     }
 
@@ -20,7 +20,12 @@ class ProductController extends Controller {
 
         $product = Product::find($id);
 
+        if (! $product) {
+            return response()->json(['message' => 'Produto não encontrado'], 404);
+        }
+
         return $product ? response()->json($product) : abort(code:404);
+
     }
 
     public function create(Request $request) {
@@ -33,7 +38,7 @@ class ProductController extends Controller {
 
         $product = Product::create($request->all());
 
-        return $product;
+        return response()->json($product, 201);
 
     }
 
@@ -86,6 +91,7 @@ class ProductController extends Controller {
         $product->save();
     
         return response()->json($product);
+
     }
 
     public function delete(Request $request, $id) {
@@ -99,6 +105,7 @@ class ProductController extends Controller {
         $product->delete();
     
         return response()->json(['message' => 'Produto deletado com sucesso']);
+
     }
 
 }
